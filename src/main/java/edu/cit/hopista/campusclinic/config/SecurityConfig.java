@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import edu.cit.hopista.campusclinic.security.CustomUserDetailsService;
 import edu.cit.hopista.campusclinic.security.JwtAuthenticationFilter;
@@ -59,8 +61,9 @@ public class SecurityConfig {
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(PUBLIC_URLS).permitAll()
-                    .anyRequest().authenticated())
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(PUBLIC_URLS).permitAll()
+                .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                     .userInfoEndpoint(userInfo ->
                         userInfo.userService(customOAuth2UserService))
@@ -97,7 +100,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
             "http://localhost:3000",
-            "http://43.202.154.182:3000"
+            "https://budgetmate-6wh3.onrender.com"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
